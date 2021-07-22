@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import url_for, Flask, render_template, request, redirect
 from flask_cors import CORS
 
 def create_app():
@@ -16,12 +16,27 @@ def create_app():
     def index():
         return render_template('index.html')
 
-    @app.route('/login')
+    @app.route('/login', methods=["GET", "POST"])
     def logIn():
-        return render_template('access/login.html')
+        if request.method == "GET":
+            return render_template('access/login.html')
+        elif request.method == "POST":
+            email = request.form.get("email")
+            password = request.form.get("password")
 
-    @app.route('/signup')
+    @app.route('/signup', methods=["GET", "POST"])
     def signUp():
-        return render_template('access/signup.html')
+        if request.method == "GET":
+            return render_template('access/signup.html')
+        elif request.method == "POST":
+            name = request.form.get("name")
+            email = request.form.get("email")
+            password = request.form.get("password")
+            conn=db.get_db()
+            cursor = conn.cursor()
+            cursor.execute(f"INSERT INTO users VALUES (DEFAULT, '{name}', '{email}', '{password}');")
+            conn.commit()
+            conn.close()
+            return redirect(url_for("logIn"), 302)
     
     return app
