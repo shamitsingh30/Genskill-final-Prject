@@ -1,20 +1,9 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
-
-    <link href="{{ url_for('static', filename='main.css') }}" rel="stylesheet"/>
-    <!-- This above url will look like "/static/main.css" in your browser -->
-    <title>To Do</title>
-  </head>
-  
-  <body>
-    <div class="container-fluid">
-        <h1 class="display-1">My Tasks</h1>
-    </div>
-  </body>
+{% extends "taskmanager/base.html" %}
+{% block body %}
+<div class="container-fluid">
+  <h1 class="display-1 m-2">My Tasks</h1>
+  <div class="col-md-12">
+    <button type="submit" class="btn btn-primary btn-lg m-2" onclick="location.href='/addtask'">Add Task</button>
+  </div>
+</div>
+{% endblock %}

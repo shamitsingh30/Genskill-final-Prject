@@ -26,7 +26,7 @@ def logIn():
         if (email in emails) and (str(password) == str(correct_password)):
             return redirect(url_for("tasks.myTasks"),302)
         else:
-            return redirect(url_for("tasks.myTasks"), 302)
+            return redirect(url_for("joinin.logIn"), 302)
 
 @bp.route('/signup', methods=["GET", "POST"])
 def signUp():
