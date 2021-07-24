@@ -12,6 +12,9 @@ def create_app():
     from . import joinin
     app.register_blueprint(joinin.bp)
 
+    from . import tasks
+    app.register_blueprint(tasks.bp)
+
     from . import db 
     db.init_app(app)
     
