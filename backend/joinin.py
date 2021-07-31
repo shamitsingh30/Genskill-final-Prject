@@ -1,4 +1,4 @@
-from flask import Blueprint, url_for, render_template, request, redirect
+from flask import Blueprint, url_for, render_template, request, redirect, jsonify
 
 from . import db
 from . import tasks
@@ -11,36 +11,33 @@ def index():
 
 @bp.route('/login', methods=["GET", "POST"])
 def logIn():
-    if request.method == "GET":
-        return render_template('access/login.html')
-    elif request.method == "POST":
-        email = request.form.get("email")
-        password = request.form.get("password")
+    if request.method == "POST":
+        data = request.get_json()
+        email = data["email"]
+        password = data["password"]
         conn=db.get_db()
         cursor = conn.cursor()
         cursor.execute("SELECT email FROM users;")
-        emails = cursor.fetchall()[0][0]
+        emails = cursor.fetchall()
+        emails = [email[0] for email in emails]
         cursor.execute(f"SELECT password FROM users WHERE email = '{email}'")
         correct_password = cursor.fetchone()[0]
         cursor.close()
         if (email in emails) and (str(password) == str(correct_password)):
-            return redirect(url_for("tasks.myTasks"),302)
+            return {"status": True}
         else:
-            return redirect(url_for("joinin.logIn"), 302)
+            return {"status": False}
 
 @bp.route('/signup', methods=["GET", "POST"])
 def signUp():
-    if request.method == "GET":
-        return render_template('access/signup.html')
-    elif request.method == "POST":
-        name = request.form.get("name")
-        email = request.form.get("email")
-        password = request.form.get("password")
-        conn=db.get_db()
+    if request.method == "POST":
+        data = request.get_json()
+        name = data['name']
+        email = data['email']
+        password = data['password']
+        conn = db.get_db()
         cursor = conn.cursor()
-        cursor.execute(f"INSERT INTO users VALUES (DEFAULT, '{name}', '{email}', '{password}');")
-        valid_name = name.replace(" ", "_")
-        cursor.execute(f"CREATE TABLE {valid_name}( id SERIAL PRIMARY KEY, task TEXT NOT NULL, date TEXT NOT NULL, time TEXT, description TEXT)")
+        cursor.execute(f"INSERT INTO users VALUES (DEFAULT, '{name}', '{email}', '{password}')")
         conn.commit()
         conn.close()
-        return redirect(url_for("joinin.logIn"), 302)
+        return {"status": "Done"}
